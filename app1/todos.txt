@@ -1,7 +1,7 @@
-prepare something
-ready
- or nottest
+ready or not
 Make soup
 Make bread
 Master Python!
 test
+hi
+2
