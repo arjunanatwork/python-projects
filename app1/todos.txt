@@ -3,5 +3,3 @@ Make soup
 Make bread
 Master Python!
 test
-hi
-2
