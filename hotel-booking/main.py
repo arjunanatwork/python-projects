@@ -1,6 +1,7 @@
 import pandas
 
 df = pandas.read_csv('hotels.csv', dtype={"id": str})
+df_cards = pandas.read_csv('cards.csv', dtype=str).to_dict(orient='records')
 
 class User:
     def view_hotels(self):
@@ -41,13 +42,30 @@ class ReservationTicket:
         return content
 
 
+class CreditCard:
+    def __init__(self, number):
+        self.number = number
+
+    def validate(self, expiration, holder, cvc):
+        card_date = {"number": self.number, "expiration": expiration, "holder": holder, "cvc": cvc}
+        if card_date in df_cards:
+            return True
+        else:
+            return False
+
+
 print(df)
 hotel_ID = input("Enter the id of the hotel: ")
 hotel = Hotel(hotel_ID)
+
 if hotel.available():
-    hotel.book()
-    name = input("Enter your name: ")
-    reservation_ticket = ReservationTicket(customer_name=name, hotel_object=hotel)
-    print(reservation_ticket.generate())
+    credit_card = CreditCard(number="1234")
+    if credit_card.validate(expiration="12/26", holder="JOHM SMITH", cvc="123"):
+        hotel.book()
+        name = input("Enter your name: ")
+        reservation_ticket = ReservationTicket(customer_name=name, hotel_object=hotel)
+        print(reservation_ticket.generate())
+    else:
+        print("Invalid credit card number")
 else:
     print("Sorry, the hotel is not available")
