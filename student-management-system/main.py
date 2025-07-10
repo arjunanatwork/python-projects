@@ -85,13 +85,13 @@ class InsertDialog(QDialog):
         connection.commit()
         cursor.close()
         connection.close()
-        age_calculator.load_data()
+        main_window.load_data()
 
 
 
 
 app = QApplication(sys.argv)
-age_calculator = MainWindow()
-age_calculator.show()
-age_calculator.load_data()
+main_window = MainWindow()
+main_window.show()
+main_window.load_data()
 sys.exit(app.exec())
