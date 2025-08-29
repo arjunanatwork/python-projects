@@ -2,6 +2,10 @@ from platform import system
 
 from dotenv import load_dotenv
 import os
+
+from langchain_core.messages import HumanMessage, AIMessage
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from  langchain_google_genai import ChatGoogleGenerativeAI
 
 load_dotenv()
@@ -18,14 +22,22 @@ system_prompt = """
 """
 llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.5, google_api_key=gemini_api_key)
 
+prompt = ChatPromptTemplate.from_messages([
+    ("system", system_prompt),
+    (MessagesPlaceholder(variable_name="history")),
+    ("user", "{input}")
+])
+
+chain = prompt | llm | StrOutputParser()
+
 print("Hi, I am Albert, how can I help you?")
 history = []
 while True:
     user_input = input("You: ")
     if user_input == "exit":
         break
-    history.append({"role": "user", "content": user_input})
-    response = llm.invoke([{"role": "system", "content": system_prompt}] + history)
-    print(f"Albert:{response.content} ")
-    history.append({"role": "assistant", "content": response.content})
+    response = chain.invoke({"input": user_input, "history": history})
+    print(f"Albert:{response}")
+    history.append(HumanMessage(content=user_input))
+    history.append(AIMessage(content=response))
 
